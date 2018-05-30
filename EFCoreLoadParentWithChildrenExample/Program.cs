@@ -35,17 +35,27 @@ namespace EFCoreLoadParentWithChildrenExample
                     }
                     Console.WriteLine($"1: Loaded {nI.Count} NavItems without Include [should be 16]");
                     showTree(nI);
+                    Console.WriteLine();
+                }
+                using (var db2 = new Database(Database.defaultConnectionString))
+                {
 
-                    nI = db.navItems.Where(p => p.parentId == null).Include(p => p.children).ToList();
-                    Console.WriteLine($"2: Loaded {nI.Count} NavItems without Include [should be 16]");
+                    var nI = db2.navItems.Where(p => p.parentId == null).Include(p => p.children).ToList();
+                    Console.WriteLine($"2: Loaded {nI.Count} NavItems with Include [should be 16]");
                     showTree(nI);
+                    Console.WriteLine();
 
-                    nI = db.navItems.ToList();
+                }
+                using (var db3 = new Database(Database.defaultConnectionString))
+                {
+
+                    var nI = db3.navItems.ToList();
                     Console.WriteLine($"3.1: Loaded {nI.Count} NavItems... [should be 43]");
 
                     nI = nI.Where(p => p.parentId == null).ToList();    // Remove child items from the root of the collection
                     Console.WriteLine($"3.2: Filtered to  {nI.Count} NavItems... [should be 16]");
                     showTree(nI);
+                    Console.WriteLine();
                 }
             }
             catch (Exception ex)
